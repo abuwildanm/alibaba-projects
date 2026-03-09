@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import logo from '../assets/logo.svg';
 
 function NavigationBar({ currentUser, setCurrentUser }) {
   const handleLogout = () => {
@@ -13,8 +14,15 @@ function NavigationBar({ currentUser, setCurrentUser }) {
     <Navbar bg="light" expand="lg" className="navbar-custom mb-4">
       <Container>
         <LinkContainer to="/discover">
-          <Navbar.Brand className="text-white">
-            <i className="fas fa-heart me-2"></i>MatchFinder
+          <Navbar.Brand className="text-white d-flex align-items-center">
+            <img 
+              src={logo} 
+              alt="Lovara Logo" 
+              width="30" 
+              height="30" 
+              className="d-inline-block align-top me-2"
+            />
+            Lovara
           </Navbar.Brand>
         </LinkContainer>
         

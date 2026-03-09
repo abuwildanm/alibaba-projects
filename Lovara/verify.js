@@ -1,7 +1,7 @@
 // Simple test to verify the application structure
 // This would normally be in a separate test file
 
-console.log('MatchFinder Application Structure:');
+console.log('Lovara Application Structure:');
 console.log('1. Components:');
 console.log('  - Navbar.js');
 console.log('2. Pages:');
@@ -17,7 +17,7 @@ console.log('  - main.css');
 console.log('4. Utils:');
 console.log('  - (empty for now)');
 console.log('5. Assets:');
-console.log('  - (empty for now)');
+console.log('  - logo.svg');
 console.log('');
 console.log('Application Features:');
 console.log('✓ User Registration & Profile Creation');

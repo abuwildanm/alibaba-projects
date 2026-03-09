@@ -1,4 +1,4 @@
-# MatchFinder Documentation
+# Lovara Documentation
 
 ## Table of Contents
 1. [Overview](#overview)
@@ -13,7 +13,7 @@
 10. [Technologies Used](#technologies-used)
 
 ## Overview
-MatchFinder is a web application designed for partner matching similar to Tinder. Built with React, Bootstrap, and modern web technologies, it provides a complete dating application experience with 5 main user flows.
+Lovara is a web application designed for partner matching similar to Tinder. Built with React, Bootstrap, and modern web technologies, it provides a complete dating application experience with 5 main user flows.
 
 ## Features
 - **User Registration & Profile Creation**: Create accounts and build profiles

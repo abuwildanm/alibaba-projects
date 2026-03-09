@@ -1,5 +1,5 @@
 {
-  "name": "matchfinder",
+  "name": "lovara",
   "version": "1.0.0",
   "description": "Partner matching web application similar to Tinder",
   "main": "index.js",
