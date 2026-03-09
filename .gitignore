@@ -186,9 +186,9 @@ cython_debug/
 .abstra/
 
 # Visual Studio Code
-#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore 
+#  Visual Studio Code specific template is maintained in a separate VisualStudioCode.gitignore
 #  that can be found at https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
-#  and can be added to the global gitignore or merged into this file. However, if you prefer, 
+#  and can be added to the global gitignore or merged into this file. However, if you prefer,
 #  you could uncomment the following to ignore the entire vscode folder
 # .vscode/
 
@@ -246,3 +246,50 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# React / Node.js specific
+**/node_modules/
+**/build/
+**/dist/
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/.nyc_output
+**/coverage
+**/.nuxt
+**/.next
+**/out
+**/.nuxt
+**/.vercel
+**/.netlify
+**/.firebase
+**/firebase-debug.log
+**/ngrok-debug.log
+**/.grunt
+**/.sass-cache
+**/bower_components
+**/.tern-port
+**/node_modules_production
+**/flow-typed
+**/__tests__
+**/test-results
+**/logs
+**/*.log
+**/debug.log
+**/.history
+**/.fusebox
+**/.serverless
+**/.dynamodb
+**/.cache
+**/tmp
+**/.vscode
+**/.idea
+**/package-lock.json
+**/yarn.lock
+**/pnpm-lock.yaml
+**/npm-shrinkwrap.json

@@ -1,0 +1,438 @@
+/* Modern styles for Lovara v2 */
+:root {
+  --primary-color: #e91e63;
+  --secondary-color: #9c27b0;
+  --accent-color: #2196f3;
+  --background-color: #fafafa;
+  --card-background: #ffffff;
+  --text-primary: #212121;
+  --text-secondary: #757575;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --danger-color: #f44336;
+  --border-radius: 16px;
+  --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+.app-container {
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Modern Navbar */
+.navbar-custom {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+  box-shadow: var(--box-shadow);
+  padding: 12px 0;
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: var(--transition);
+  border-radius: 8px;
+  padding: 8px 12px !important;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Modern Card Styles */
+.card {
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Profile Card for Discover Page */
+.card-container {
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  height: 600px;
+  margin: 20px auto;
+  perspective: 1500px;
+}
+
+.profile-card {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  cursor: grab;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  color: white;
+  transition: var(--transition);
+  background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)), 
+              linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+}
+
+.profile-info {
+  padding: 20px 0;
+  z-index: 2;
+}
+
+.profile-info h3 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.profile-info p {
+  margin-bottom: 5px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.badge {
+  border-radius: 20px;
+  font-weight: 500;
+  padding: 6px 12px;
+  margin: 2px;
+}
+
+/* Swipe Buttons */
+.swipe-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 30px;
+  z-index: 3;
+}
+
+.btn-swipe {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  border: none;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.btn-swipe:hover {
+  transform: scale(1.1);
+}
+
+.btn-dislike {
+  background-color: white;
+  color: var(--danger-color);
+}
+
+.btn-like {
+  background-color: white;
+  color: var(--success-color);
+}
+
+.btn-super-like {
+  background-color: white;
+  color: var(--warning-color);
+}
+
+/* Photo Thumbnails */
+.swiper-container {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  overflow-x: auto;
+  max-width: 100%;
+  justify-content: center;
+}
+
+.swiper-slide {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.swiper-slide.active {
+  border: 3px solid var(--primary-color);
+  transform: scale(1.05);
+}
+
+.swiper-slide:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+/* Chat Interface */
+.chat-container {
+  display: flex;
+  height: 80vh;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+.sidebar {
+  width: 320px;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
+  background-color: var(--card-background);
+}
+
+.chat-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--card-background);
+}
+
+.messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  margin-bottom: 12px;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sent {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 5px;
+}
+
+.received {
+  background-color: #e9ecef;
+  color: var(--text-primary);
+  margin-right: auto;
+  border-bottom-left-radius: 5px;
+}
+
+.message-input {
+  padding: 15px;
+  border-top: 1px solid #eee;
+  background-color: white;
+}
+
+/* Event Cards */
+.event-card {
+  transition: var(--transition);
+  border: 1px solid #e0e0e0;
+}
+
+.event-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.event-date {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* Video Chat Interface */
+.video-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+  color: white;
+  padding: 20px;
+}
+
+.video-call-area {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-video {
+  flex: 1;
+  max-width: 70%;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-video {
+  width: 30%;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.video-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background: white;
+  color: var(--text-primary);
+  border: none;
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.video-btn:hover {
+  transform: scale(1.1);
+}
+
+.end-call {
+  background: var(--danger-color) !important;
+  color: white !important;
+}
+
+/* Loading Animation */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(0,0,0,0.1);
+  border-top: 5px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility Classes */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(233, 30, 99, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-container {
+    height: 500px;
+    width: 95%;
+  }
+  
+  .profile-info h3 {
+    font-size: 1.5rem;
+  }
+  
+  .swipe-buttons {
+    gap: 15px;
+  }
+  
+  .btn-swipe {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: 40vh;
+  }
+  
+  .chat-area {
+    height: calc(100vh - 40vh);
+  }
+}

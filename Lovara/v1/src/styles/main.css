@@ -51,6 +51,32 @@ body {
   margin-top: 20px;
 }
 
+/* Override Bootstrap button styles to ensure visibility */
+.swipe-buttons .btn {
+  min-width: 80px;
+  min-height: 80px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  border: none;
+  border-radius: 12px;
+  color: white;
+}
+
+.swipe-buttons .btn i {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.swipe-buttons .btn span {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Old button classes kept for compatibility */
 .btn-swipe {
   width: 60px;
   height: 60px;

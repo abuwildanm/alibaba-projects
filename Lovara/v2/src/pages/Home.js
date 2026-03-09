@@ -5,6 +5,7 @@ function Home() {
   const [profiles, setProfiles] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
 
   // Mock data for potential matches
   useEffect(() => {
@@ -77,7 +78,7 @@ function Home() {
           interests: ['Volunteering', 'Animals', 'Nature']
         }
       ];
-      
+
       setProfiles(mockProfiles);
       setLoading(false);
     }, 1000);
@@ -91,7 +92,7 @@ function Home() {
       // User passed
       alert(`You passed on ${profiles[currentIndex]?.name}`);
     }
-    
+
     // Move to next profile
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -126,15 +127,15 @@ function Home() {
       <Row className="justify-content-center">
         <Col xs={12} sm={10} md={8} lg={6}>
           <div className="card-container">
-            <div 
-              className="profile-card" 
-              style={{ backgroundImage: `url(${currentProfile.photos[0]})` }}
+            <div
+              className="profile-card"
+              style={{ backgroundImage: `url(${currentProfile.photos[selectedPhotoIndex]})` }}
             >
               <div className="profile-info">
                 <h3>{currentProfile.name}, {currentProfile.age}</h3>
                 <p><i className="fas fa-map-marker-alt"></i> {currentProfile.distance} km away</p>
                 <p>{currentProfile.bio}</p>
-                
+
                 <div className="mt-2">
                   <strong>Interests:</strong>
                   <div className="d-flex flex-wrap mt-1">
@@ -145,47 +146,54 @@ function Home() {
                 </div>
               </div>
             </div>
-            
-            <div className="swipe-buttons">
-              <Button 
-                className="btn-swipe btn-dislike" 
+
+            <div className="swipe-buttons d-flex justify-content-center gap-4">
+              <Button
+                variant="danger"
+                size="lg"
+                className="d-flex flex-column align-items-center"
                 onClick={() => handleSwipe('left')}
-                title="Pass"
+                title="Not Like"
               >
                 <i className="fas fa-times"></i>
+                <span className="mt-1">Not Like</span>
               </Button>
-              
-              <Button 
-                className="btn-swipe btn-super-like" 
+
+              <Button
+                variant="info"
+                size="lg"
+                className="d-flex flex-column align-items-center"
                 onClick={() => handleSwipe('super')}
                 title="Super Like"
               >
                 <i className="fas fa-star"></i>
+                <span className="mt-1">Super Like</span>
               </Button>
-              
-              <Button 
-                className="btn-swipe btn-like" 
+
+              <Button
+                variant="success"
+                size="lg"
+                className="d-flex flex-column align-items-center"
                 onClick={() => handleSwipe('right')}
                 title="Like"
               >
                 <i className="fas fa-heart"></i>
+                <span className="mt-1">Like</span>
               </Button>
             </div>
           </div>
-          
+
           {/* Photo thumbnails */}
           <div className="swiper-container mt-3">
             {currentProfile.photos.map((photo, index) => (
-              <img 
-                key={index} 
-                src={photo} 
-                alt={`Profile ${index}`} 
-                className={`swiper-slide ${index === 0 ? 'active' : ''}`}
+              <img
+                key={index}
+                src={photo}
+                alt={`Profile ${index}`}
+                className={`swiper-slide ${index === selectedPhotoIndex ? 'active' : ''}`}
                 onClick={() => {
-                  // Change main photo when thumbnail clicked
-                  const updatedProfiles = [...profiles];
-                  updatedProfiles[currentIndex].photos.unshift(updatedProfiles[currentIndex].photos.splice(index, 1)[0]);
-                  setProfiles(updatedProfiles);
+                  // Highlight the selected photo instead of swapping
+                  setSelectedPhotoIndex(index);
                 }}
               />
             ))}
