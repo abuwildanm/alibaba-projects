@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 
-function Register({ setCurrentUser }) {
+// API base URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+function Register({ onLogin }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,7 +16,7 @@ function Register({ setCurrentUser }) {
     interests: ''
   });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,39 +26,43 @@ function Register({ setCurrentUser }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('Please fill in all required fields');
-      return;
+    // Parse interests from comma-separated string
+    const interestsArray = formData.interests ? 
+      formData.interests.split(',').map(i => i.trim()).filter(i => i) : [];
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          interests: interestsArray
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Successful registration
+        onLogin(data.user, data.token);
+        navigate('/discover');
+      } else {
+        // Error occurred
+        setError(data.error || 'Registration failed');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Registration error:', err);
+    } finally {
+      setLoading(false);
     }
-
-    // Create user object
-    const newUser = {
-      id: Date.now().toString(),
-      ...formData,
-      profilePic: `https://randomuser.me/api/portraits/${formData.gender === 'male' ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-      photos: [
-        `https://randomuser.me/api/portraits/${formData.gender === 'male' ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-        `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`,
-        `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`
-      ],
-      location: 'Jakarta, Indonesia',
-      distance: Math.floor(Math.random() * 20) + 1,
-      lastActive: 'Online now'
-    };
-
-    // Save user to localStorage
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    setCurrentUser(newUser);
-    setSuccess(true);
-
-    // Redirect after successful registration
-    setTimeout(() => {
-      navigate('/discover');
-    }, 1500);
   };
 
   return (
@@ -63,7 +70,7 @@ function Register({ setCurrentUser }) {
       <Row className="w-100 justify-content-center">
         <Col md={8} lg={6}>
           <Card className="shadow-lg border-0" style={{ borderRadius: '16px' }}>
-            <Card.Header className="bg-gradient text-white text-center py-4" style={{ 
+            <Card.Header className="bg-gradient text-white text-center py-4" style={{
               background: 'linear-gradient(135deg, #e91e63, #9c27b0)',
               borderTopLeftRadius: '16px',
               borderTopRightRadius: '16px'
@@ -72,7 +79,6 @@ function Register({ setCurrentUser }) {
             </Card.Header>
             <Card.Body>
               {error && <Alert variant="danger">{error}</Alert>}
-              {success && <Alert variant="success">Registration successful! Redirecting...</Alert>}
 
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formName">
@@ -85,6 +91,7 @@ function Register({ setCurrentUser }) {
                     placeholder="Enter your name"
                     required
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -98,6 +105,7 @@ function Register({ setCurrentUser }) {
                     placeholder="Enter your email"
                     required
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -111,6 +119,7 @@ function Register({ setCurrentUser }) {
                     placeholder="Create a password"
                     required
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -123,6 +132,7 @@ function Register({ setCurrentUser }) {
                     onChange={handleChange}
                     placeholder="Enter your age"
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -133,6 +143,7 @@ function Register({ setCurrentUser }) {
                     value={formData.gender}
                     onChange={handleChange}
                     className="border-radius-10"
+                    disabled={loading}
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -151,6 +162,7 @@ function Register({ setCurrentUser }) {
                     onChange={handleChange}
                     placeholder="Tell us about yourself"
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -163,11 +175,12 @@ function Register({ setCurrentUser }) {
                     onChange={handleChange}
                     placeholder="Add your interests (comma separated)"
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100 py-2 fw-bold">
-                  Create Profile
+                <Button variant="primary" type="submit" className="w-100 py-2 fw-bold" disabled={loading}>
+                  {loading ? 'Creating Profile...' : 'Create Profile'}
                 </Button>
               </Form>
             </Card.Body>

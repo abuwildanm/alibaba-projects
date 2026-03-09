@@ -7,92 +7,278 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
 
-  // Mock data for potential matches
+  // Fetch potential matches from API
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      const mockProfiles = [
-        {
-          id: '1',
-          name: 'Sarah',
-          age: 26,
-          bio: 'Loves hiking and photography. Looking for someone to explore the world with.',
-          distance: 5,
-          photos: [
-            'https://randomuser.me/api/portraits/women/44.jpg',
-            'https://picsum.photos/400/600?random=1',
-            'https://picsum.photos/400/600?random=2'
-          ],
-          interests: ['Travel', 'Photography', 'Hiking']
-        },
-        {
-          id: '2',
-          name: 'Michael',
-          age: 29,
-          bio: 'Foodie and coffee enthusiast. Enjoy trying new restaurants and cafes.',
-          distance: 8,
-          photos: [
-            'https://randomuser.me/api/portraits/men/32.jpg',
-            'https://picsum.photos/400/600?random=3',
-            'https://picsum.photos/400/600?random=4'
-          ],
-          interests: ['Cooking', 'Coffee', 'Movies']
-        },
-        {
-          id: '3',
-          name: 'Emma',
-          age: 24,
-          bio: 'Artist and book lover. Passionate about creativity and literature.',
-          distance: 3,
-          photos: [
-            'https://randomuser.me/api/portraits/women/68.jpg',
-            'https://picsum.photos/400/600?random=5',
-            'https://picsum.photos/400/600?random=6'
-          ],
-          interests: ['Art', 'Reading', 'Music']
-        },
-        {
-          id: '4',
-          name: 'David',
-          age: 31,
-          bio: 'Fitness enthusiast and tech geek. Love staying active and learning new things.',
-          distance: 12,
-          photos: [
-            'https://randomuser.me/api/portraits/men/22.jpg',
-            'https://picsum.photos/400/600?random=7',
-            'https://picsum.photos/400/600?random=8'
-          ],
-          interests: ['Gym', 'Technology', 'Gaming']
-        },
-        {
-          id: '5',
-          name: 'Lisa',
-          age: 27,
-          bio: 'Animal lover and volunteer. Passionate about helping others and making a difference.',
-          distance: 7,
-          photos: [
-            'https://randomuser.me/api/portraits/women/33.jpg',
-            'https://picsum.photos/400/600?random=9',
-            'https://picsum.photos/400/600?random=10'
-          ],
-          interests: ['Volunteering', 'Animals', 'Nature']
+    const fetchProfiles = async () => {
+      try {
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+          // Handle unauthorized access
+          return;
         }
-      ];
-      
-      setProfiles(mockProfiles);
-      setLoading(false);
-    }, 1000);
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/discover`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Transform API data to match expected format
+          const transformedProfiles = data.map(profile => ({
+            id: profile.id,
+            name: profile.name,
+            age: profile.age || 25,
+            bio: profile.bio || 'No bio available',
+            distance: profile.distance_preference || 10,
+            photos: [
+              profile.profile_pic_url || `https://randomuser.me/api/portraits/${profile.gender === 'male' ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
+              `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`,
+              `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`
+            ],
+            interests: [] // Would come from API if implemented
+          }));
+
+          setProfiles(transformedProfiles);
+        } else {
+          console.error('Failed to fetch profiles:', response.statusText);
+          // Fallback to mock data if API fails
+          const mockProfiles = [
+            {
+              id: '1',
+              name: 'Sarah',
+              age: 26,
+              bio: 'Loves hiking and photography. Looking for someone to explore the world with.',
+              distance: 5,
+              photos: [
+                'https://randomuser.me/api/portraits/women/44.jpg',
+                'https://picsum.photos/400/600?random=1',
+                'https://picsum.photos/400/600?random=2'
+              ],
+              interests: ['Travel', 'Photography', 'Hiking']
+            },
+            {
+              id: '2',
+              name: 'Michael',
+              age: 29,
+              bio: 'Foodie and coffee enthusiast. Enjoy trying new restaurants and cafes.',
+              distance: 8,
+              photos: [
+                'https://randomuser.me/api/portraits/men/32.jpg',
+                'https://picsum.photos/400/600?random=3',
+                'https://picsum.photos/400/600?random=4'
+              ],
+              interests: ['Cooking', 'Coffee', 'Movies']
+            },
+            {
+              id: '3',
+              name: 'Emma',
+              age: 24,
+              bio: 'Artist and book lover. Passionate about creativity and literature.',
+              distance: 3,
+              photos: [
+                'https://randomuser.me/api/portraits/women/68.jpg',
+                'https://picsum.photos/400/600?random=5',
+                'https://picsum.photos/400/600?random=6'
+              ],
+              interests: ['Art', 'Reading', 'Music']
+            },
+            {
+              id: '4',
+              name: 'David',
+              age: 31,
+              bio: 'Fitness enthusiast and tech geek. Love staying active and learning new things.',
+              distance: 12,
+              photos: [
+                'https://randomuser.me/api/portraits/men/22.jpg',
+                'https://picsum.photos/400/600?random=7',
+                'https://picsum.photos/400/600?random=8'
+              ],
+              interests: ['Gym', 'Technology', 'Gaming']
+            },
+            {
+              id: '5',
+              name: 'Lisa',
+              age: 27,
+              bio: 'Animal lover and volunteer. Passionate about helping others and making a difference.',
+              distance: 7,
+              photos: [
+                'https://randomuser.me/api/portraits/women/33.jpg',
+                'https://picsum.photos/400/600?random=9',
+                'https://picsum.photos/400/600?random=10'
+              ],
+              interests: ['Volunteering', 'Animals', 'Nature']
+            }
+          ];
+          setProfiles(mockProfiles);
+        }
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
+        // Fallback to mock data if API fails
+        const mockProfiles = [
+          {
+            id: '1',
+            name: 'Sarah',
+            age: 26,
+            bio: 'Loves hiking and photography. Looking for someone to explore the world with.',
+            distance: 5,
+            photos: [
+              'https://randomuser.me/api/portraits/women/44.jpg',
+              'https://picsum.photos/400/600?random=1',
+              'https://picsum.photos/400/600?random=2'
+            ],
+            interests: ['Travel', 'Photography', 'Hiking']
+          },
+          {
+            id: '2',
+            name: 'Michael',
+            age: 29,
+            bio: 'Foodie and coffee enthusiast. Enjoy trying new restaurants and cafes.',
+            distance: 8,
+            photos: [
+              'https://randomuser.me/api/portraits/men/32.jpg',
+              'https://picsum.photos/400/600?random=3',
+              'https://picsum.photos/400/600?random=4'
+            ],
+            interests: ['Cooking', 'Coffee', 'Movies']
+          },
+          {
+            id: '3',
+            name: 'Emma',
+            age: 24,
+            bio: 'Artist and book lover. Passionate about creativity and literature.',
+            distance: 3,
+            photos: [
+              'https://randomuser.me/api/portraits/women/68.jpg',
+              'https://picsum.photos/400/600?random=5',
+              'https://picsum.photos/400/600?random=6'
+            ],
+            interests: ['Art', 'Reading', 'Music']
+          },
+          {
+            id: '4',
+            name: 'David',
+            age: 31,
+            bio: 'Fitness enthusiast and tech geek. Love staying active and learning new things.',
+            distance: 12,
+            photos: [
+              'https://randomuser.me/api/portraits/men/22.jpg',
+              'https://picsum.photos/400/600?random=7',
+              'https://picsum.photos/400/600?random=8'
+            ],
+            interests: ['Gym', 'Technology', 'Gaming']
+          },
+          {
+            id: '5',
+            name: 'Lisa',
+            age: 27,
+            bio: 'Animal lover and volunteer. Passionate about helping others and making a difference.',
+            distance: 7,
+            photos: [
+              'https://randomuser.me/api/portraits/women/33.jpg',
+              'https://picsum.photos/400/600?random=9',
+              'https://picsum.photos/400/600?random=10'
+            ],
+            interests: ['Volunteering', 'Animals', 'Nature']
+          }
+        ];
+        setProfiles(mockProfiles);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfiles();
   }, []);
 
-  const handleSwipe = (direction) => {
+  const handleSwipe = async (direction) => {
+    const currentProfile = profiles[currentIndex];
+    if (!currentProfile) return;
+
     if (direction === 'right') {
-      // User liked - add to matches
-      alert(`You liked ${profiles[currentIndex]?.name}!`);
+      // User liked - add to matches via API
+      try {
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+          alert('Please log in to continue');
+          return;
+        }
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/like/${currentProfile.id}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert(`You liked ${currentProfile.name}!`);
+        } else {
+          const data = await response.json();
+          alert(`Error: ${data.error || 'Failed to like user'}`);
+        }
+      } catch (error) {
+        console.error('Error liking user:', error);
+        alert('Error: Could not like user');
+      }
     } else if (direction === 'left') {
-      // User passed
-      alert(`You passed on ${profiles[currentIndex]?.name}`);
+      // User passed - record via API
+      try {
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+          alert('Please log in to continue');
+          return;
+        }
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/pass/${currentProfile.id}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert(`You passed on ${currentProfile.name}`);
+        } else {
+          const data = await response.json();
+          alert(`Error: ${data.error || 'Failed to pass on user'}`);
+        }
+      } catch (error) {
+        console.error('Error passing on user:', error);
+        alert('Error: Could not pass on user');
+      }
+    } else if (direction === 'super') {
+      // Super like - add to matches via API with special designation
+      try {
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+          alert('Please log in to continue');
+          return;
+        }
+
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/like/${currentProfile.id}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          alert(`You super liked ${currentProfile.name}!`);
+        } else {
+          const data = await response.json();
+          alert(`Error: ${data.error || 'Failed to super like user'}`);
+        }
+      } catch (error) {
+        console.error('Error super liking user:', error);
+        alert('Error: Could not super like user');
+      }
     }
-    
+
     // Move to next profile
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex(currentIndex + 1);

@@ -126,7 +126,11 @@ function Matches() {
                         <Button
                           variant="outline-success"
                           className="w-100 py-2"
-                          href={`/messages?userId=${match.id}`}
+                          onClick={() => {
+                            // Store the selected user in localStorage or state to open the specific conversation
+                            localStorage.setItem('selectedConversation', JSON.stringify(match));
+                            window.location.href = '/messages';
+                          }}
                         >
                           <i className="fas fa-comment me-2"></i>Message
                         </Button>

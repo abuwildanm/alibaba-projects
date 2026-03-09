@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 
-function Register({ setCurrentUser }) {
+// API base URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+function Register({ onLogin }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,7 +16,7 @@ function Register({ setCurrentUser }) {
     interests: ''
   });
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,39 +26,43 @@ function Register({ setCurrentUser }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.password) {
-      setError('Please fill in all required fields');
-      return;
+    setLoading(true);
+    setError('');
+
+    // Parse interests from comma-separated string
+    const interestsArray = formData.interests ? 
+      formData.interests.split(',').map(i => i.trim()).filter(i => i) : [];
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          interests: interestsArray
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Successful registration
+        onLogin(data.user, data.token);
+        navigate('/discover');
+      } else {
+        // Error occurred
+        setError(data.error || 'Registration failed');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Registration error:', err);
+    } finally {
+      setLoading(false);
     }
-
-    // Create user object
-    const newUser = {
-      id: Date.now().toString(),
-      ...formData,
-      profilePic: `https://randomuser.me/api/portraits/${formData.gender === 'male' ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-      photos: [
-        `https://randomuser.me/api/portraits/${formData.gender === 'male' ? 'men' : 'women'}/${Math.floor(Math.random() * 50)}.jpg`,
-        `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`,
-        `https://picsum.photos/400/600?random=${Math.floor(Math.random() * 100)}`
-      ],
-      location: 'Jakarta, Indonesia',
-      distance: Math.floor(Math.random() * 20) + 1,
-      lastActive: 'Online now'
-    };
-
-    // Save user to localStorage
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    setCurrentUser(newUser);
-    setSuccess(true);
-    
-    // Redirect after successful registration
-    setTimeout(() => {
-      navigate('/discover');
-    }, 1500);
   };
 
   return (
@@ -68,62 +75,66 @@ function Register({ setCurrentUser }) {
             </Card.Header>
             <Card.Body>
               {error && <Alert variant="danger">{error}</Alert>}
-              {success && <Alert variant="success">Registration successful! Redirecting...</Alert>}
-              
+
               <Form onSubmit={handleSubmit}>
                 <Form.Group className="mb-3" controlId="formName">
                   <Form.Label>Name *</Form.Label>
-                  <Form.Control 
-                    type="text" 
-                    name="name" 
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    placeholder="Enter your name" 
-                    required 
+                  <Form.Control
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Enter your name"
+                    required
+                    disabled={loading}
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formEmail">
                   <Form.Label>Email *</Form.Label>
-                  <Form.Control 
-                    type="email" 
-                    name="email" 
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    placeholder="Enter your email" 
-                    required 
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Enter your email"
+                    required
+                    disabled={loading}
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formPassword">
                   <Form.Label>Password *</Form.Label>
-                  <Form.Control 
-                    type="password" 
-                    name="password" 
-                    value={formData.password} 
-                    onChange={handleChange} 
-                    placeholder="Create a password" 
-                    required 
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Create a password"
+                    required
+                    disabled={loading}
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formAge">
                   <Form.Label>Age</Form.Label>
-                  <Form.Control 
-                    type="number" 
-                    name="age" 
-                    value={formData.age} 
-                    onChange={handleChange} 
-                    placeholder="Enter your age" 
+                  <Form.Control
+                    type="number"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleChange}
+                    placeholder="Enter your age"
+                    disabled={loading}
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formGender">
                   <Form.Label>Gender</Form.Label>
-                  <Form.Select 
-                    name="gender" 
-                    value={formData.gender} 
-                    onChange={handleChange} 
+                  <Form.Select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    disabled={loading}
                   >
                     <option value="">Select gender</option>
                     <option value="male">Male</option>
@@ -134,29 +145,31 @@ function Register({ setCurrentUser }) {
 
                 <Form.Group className="mb-3" controlId="formBio">
                   <Form.Label>Bio</Form.Label>
-                  <Form.Control 
-                    as="textarea" 
-                    rows={3} 
-                    name="bio" 
-                    value={formData.bio} 
-                    onChange={handleChange} 
-                    placeholder="Tell us about yourself" 
+                  <Form.Control
+                    as="textarea"
+                    rows={3}
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleChange}
+                    placeholder="Tell us about yourself"
+                    disabled={loading}
                   />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formInterests">
                   <Form.Label>Interests</Form.Label>
-                  <Form.Control 
-                    type="text" 
-                    name="interests" 
-                    value={formData.interests} 
-                    onChange={handleChange} 
-                    placeholder="Add your interests (comma separated)" 
+                  <Form.Control
+                    type="text"
+                    name="interests"
+                    value={formData.interests}
+                    onChange={handleChange}
+                    placeholder="Add your interests (comma separated)"
+                    disabled={loading}
                   />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
-                  Create Profile
+                <Button variant="primary" type="submit" className="w-100" disabled={loading}>
+                  {loading ? 'Creating Profile...' : 'Create Profile'}
                 </Button>
               </Form>
             </Card.Body>

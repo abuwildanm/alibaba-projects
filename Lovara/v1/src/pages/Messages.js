@@ -44,7 +44,18 @@ function Messages() {
     }
   ]);
   
-  const [selectedConversation, setSelectedConversation] = useState(conversations[0]);
+  // Check if there's a selected conversation from the matches page
+  const [selectedConversation, setSelectedConversation] = useState(() => {
+    const storedSelected = localStorage.getItem('selectedConversation');
+    if (storedSelected) {
+      localStorage.removeItem('selectedConversation'); // Clear after retrieving
+      const parsed = JSON.parse(storedSelected);
+      // Find the conversation that matches the selected user
+      const foundConversation = conversations.find(conv => conv.id === parsed.id);
+      return foundConversation || conversations[0];
+    }
+    return conversations[0];
+  });
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 

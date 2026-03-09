@@ -91,6 +91,9 @@ function Home() {
     } else if (direction === 'left') {
       // User passed
       alert(`You passed on ${profiles[currentIndex]?.name}`);
+    } else if (direction === 'super') {
+      // Super like
+      alert(`You super liked ${profiles[currentIndex]?.name}!`);
     }
 
     // Move to next profile

@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
 
-function Login({ setCurrentUser }) {
+// API base URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+function Login({ onLogin }) {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,23 +21,35 @@ function Login({ setCurrentUser }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
-    // For demo purposes, we'll allow login with any email/password
-    // In a real app, this would connect to a backend
-    const storedUser = localStorage.getItem('currentUser');
+    try {
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      if (user.email === formData.email) {
-        setCurrentUser(user);
+      const data = await response.json();
+
+      if (response.ok) {
+        // Successful login
+        onLogin(data.user, data.token);
         navigate('/discover');
       } else {
-        setError('Invalid email or password');
+        // Error occurred
+        setError(data.error || 'Login failed');
       }
-    } else {
-      setError('No account found. Please register first.');
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +58,7 @@ function Login({ setCurrentUser }) {
       <Row className="w-100 justify-content-center">
         <Col md={6} lg={4}>
           <Card className="shadow-lg border-0" style={{ borderRadius: '16px' }}>
-            <Card.Header className="bg-gradient text-white text-center py-4" style={{ 
+            <Card.Header className="bg-gradient text-white text-center py-4" style={{
               background: 'linear-gradient(135deg, #4CAF50, #45a049)',
               borderTopLeftRadius: '16px',
               borderTopRightRadius: '16px'
@@ -63,6 +79,7 @@ function Login({ setCurrentUser }) {
                     placeholder="Enter your email"
                     required
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
@@ -76,11 +93,12 @@ function Login({ setCurrentUser }) {
                     placeholder="Enter your password"
                     required
                     className="border-radius-10"
+                    disabled={loading}
                   />
                 </Form.Group>
 
-                <Button variant="success" type="submit" className="w-100 py-2 fw-bold">
-                  Log In
+                <Button variant="success" type="submit" className="w-100 py-2 fw-bold" disabled={loading}>
+                  {loading ? 'Logging in...' : 'Log In'}
                 </Button>
               </Form>
             </Card.Body>
