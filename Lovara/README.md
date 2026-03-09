@@ -26,7 +26,7 @@ Lovara is a web application designed for partner matching similar to Tinder. Bui
 
 ## Project Structure
 ```
-MatchFinder/
+Lovara/
 ├── public/
 │   └── index.html                 # Main HTML file
 ├── src/
@@ -60,7 +60,7 @@ MatchFinder/
 1. Clone or download the project
 2. Navigate to the project directory:
 ```bash
-cd MatchFinder
+cd Lovara
 ```
 
 3. Install dependencies:
